@@ -98,7 +98,8 @@ class ChatBot extends Component {
 
       chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
       if (!isBot) {
-        chatSteps[step.id].inputNumber = ++inputNumber;
+        inputNumber += 1;
+        chatSteps[step.id].inputNumber = inputNumber;
       } else {
         chatSteps[step.id].inputNumber = inputNumber;
       }
@@ -249,8 +250,8 @@ class ChatBot extends Component {
   };
 
   triggerNextStep = data => {
-    const { enableMobileAutoFocus } = this.props;
-    const { defaultUserSettings, previousSteps, renderedSteps, steps } = this.state;
+    const { enableMobileAutoFocus, handleNext } = this.props;
+    const { defaultUserSettings, previousSteps, renderedSteps, steps, inputCount } = this.state;
 
     let { currentStep, previousStep } = this.state;
     const isEnd = currentStep.end;
@@ -317,7 +318,7 @@ class ChatBot extends Component {
 
       nextStep.key = Random(24);
 
-      this.props.handleNext(currentStep.inputNumber, this.state.inputCount);
+      handleNext(currentStep.inputNumber, inputCount);
       previousStep = currentStep;
       currentStep = nextStep;
 
@@ -806,6 +807,7 @@ ChatBot.defaultProps = {
   floatingIcon: <ChatIcon />,
   floatingStyle: {},
   footerStyle: {},
+  handleNext: undefined,
   handleEnd: undefined,
   headerComponent: undefined,
   headerTitle: 'Chat',
