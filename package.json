@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "./node_modules/.bin/eslint lib/*.jsx",
     "prepublish": "npm run build",
-    "prepush": "npm run lint && npm run test:coverage",
+    "prepush": "npm run lint",
     "start": "./node_modules/.bin/webpack-dev-server --inline --content-base build/",
     "prettier-watch": "onchange '**/*.js' '**/*.jsx' -- prettier --write {{changed}}",
     "report-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
@@ -73,7 +73,7 @@
     "husky": "^0.13.3",
     "jsdom": "^9.12.0",
     "mocha": "^5.2.0",
-    "nyc": "^11.0.2",
+    "nyc": "^15.0.0-beta.0",
     "react-test-renderer": "^16.0.0",
     "sinon": "^7.1.0",
     "styled-components": "^4.1.3",

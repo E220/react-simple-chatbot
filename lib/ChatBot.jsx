@@ -318,7 +318,9 @@ class ChatBot extends Component {
 
       nextStep.key = Random(24);
 
-      handleNext(currentStep.inputNumber, inputCount);
+      if (handleNext) {
+        handleNext(currentStep.inputNumber, inputCount);
+      }
       previousStep = currentStep;
       currentStep = nextStep;
 
