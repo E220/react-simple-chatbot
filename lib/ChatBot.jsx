@@ -51,7 +51,8 @@ class ChatBot extends Component {
       inputInvalid: false,
       speaking: false,
       recognitionEnable: props.recognitionEnable && Recognition.isSupported(),
-      defaultUserSettings: {}
+      defaultUserSettings: {},
+      inputCount: 0
     };
 
     this.speak = speakFn(props.speechSynthesis);
@@ -81,20 +82,28 @@ class ChatBot extends Component {
     };
     const defaultCustomSettings = { delay: customDelay };
 
+    let inputNumber = 0;
     for (let i = 0, len = steps.length; i < len; i += 1) {
       const step = steps[i];
       let settings = {};
-
+      let isBot = false;
       if (step.user) {
         settings = defaultUserSettings;
       } else if (step.message || step.asMessage) {
         settings = defaultBotSettings;
+        isBot = true;
       } else if (step.component) {
         settings = defaultCustomSettings;
       }
 
       chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
+      if (!isBot) {
+        chatSteps[step.id].inputNumber = ++inputNumber;
+      } else {
+        chatSteps[step.id].inputNumber = inputNumber;
+      }
     }
+    this.setState({ inputCount: inputNumber });
 
     schema.checkInvalidIds(chatSteps);
 
@@ -308,6 +317,7 @@ class ChatBot extends Component {
 
       nextStep.key = Random(24);
 
+      this.props.handleNext(currentStep.inputNumber, this.state.inputCount);
       previousStep = currentStep;
       currentStep = nextStep;
 
@@ -743,6 +753,7 @@ ChatBot.propTypes = {
   floatingIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   floatingStyle: PropTypes.objectOf(PropTypes.any),
   footerStyle: PropTypes.objectOf(PropTypes.any),
+  handleNext: PropTypes.func,
   handleEnd: PropTypes.func,
   headerComponent: PropTypes.element,
   headerTitle: PropTypes.string,
